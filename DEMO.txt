@@ -1,0 +1,44 @@
+For Ervin:
+
+In first terminal, run:
+
+.\backend\.venv\Scripts\python.exe -m uvicorn backend.main:app --port 8000
+
+In second terminal, run this:
+
+cd /frontend
+python -m http.server 5000
+
+-------------------------------------------------
+
+For Mark or Sanil:
+
+ONE-TIME-SETUP:
+
+python -m venv backend\.venv
+.\backend\.venv\Scripts\Activate.ps1
+pip install -r backend\requirements-dev.txt
+python -m backend.train_models
+
+If Activate.ps1 errors with "running scripts is disabled," they need to run this once first then retry the Activate line:
+
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+
+Make .env file with this environment variable:
+
+SAFE_BROWSING_API_KEY=...
+
+this api key is shared in teams chat
+
+EACH TIME YOU WANT TO RUN DEMO:
+
+Terminal 1:
+.\backend\.venv\Scripts\python.exe -m uvicorn backend.main:app --port 8000
+
+Terminal 2:
+cd frontend
+python -m http.server 5000
+
+Then open http://localhost:5000
+
+
