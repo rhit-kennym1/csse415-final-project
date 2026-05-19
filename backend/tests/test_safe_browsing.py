@@ -43,7 +43,10 @@ def test_malware_threat():
     assert result["verdict"] == "malware"
 
 
-def test_missing_api_key_returns_unknown():
+def test_missing_api_key_returns_unknown(monkeypatch):
+    # Other tests in the suite may load a real key from .env via main.py's
+    # load_dotenv() call; clear it so we're testing the no-key path.
+    monkeypatch.delenv("SAFE_BROWSING_API_KEY", raising=False)
     result = check_url("https://example.com", api_key=None)
     assert result["verdict"] == "unknown"
     assert "error" in result

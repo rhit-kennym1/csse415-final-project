@@ -18,9 +18,10 @@ Open a PowerShell terminal at the repo root and run, line by line:
     pip install -r backend\requirements-dev.txt
     python -m backend.train_models
 
-The last command trains the four models on dataset1.csv and writes
-joblib files to backend\models\. Takes about 1-2 minutes. These files
-are gitignored, so each teammate has to run this once after cloning.
+The last command trains the four models on notebooks\dataset1.csv and
+writes joblib files to backend\models\. Takes about 1-2 minutes. These
+files are gitignored, so each teammate has to run this once after
+cloning.
 
 
 If PowerShell blocks Activate.ps1 with an execution-policy error, run
@@ -170,6 +171,7 @@ backend/                     FastAPI service
   models/                    joblib pickles (gitignored)
   tests/                     76 pytest cases
 frontend/                    Static HTML / JS / CSS
+notebooks/                   Original Jupyter notebooks + dataset CSVs
 docs/superpowers/            Design doc + implementation plan
 DEPLOY.md                    How to deploy to Cloud Run + Firebase
 

@@ -21,7 +21,7 @@ from xgboost import XGBClassifier
 
 from backend.features import FEATURE_NAMES
 
-DEFAULT_DATA_CSV = Path(__file__).resolve().parent.parent / "dataset1.csv"
+DEFAULT_DATA_CSV = Path(__file__).resolve().parent.parent / "notebooks" / "dataset1.csv"
 MODEL_DIR = Path(__file__).resolve().parent / "models"
 
 

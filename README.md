@@ -23,7 +23,7 @@ python -m venv backend\.venv
 # Install Python dependencies (~2 min, ~500 MB)
 pip install -r backend\requirements-dev.txt
 
-# Train the four models on dataset1.csv (~2 min)
+# Train the four models on notebooks\dataset1.csv (~2 min)
 # Writes joblib files to backend\models\ — these are gitignored, so each
 # teammate needs to run this once after cloning.
 python -m backend.train_models
@@ -117,6 +117,7 @@ backend/                     FastAPI service
 ├── models/                  joblib pickles (gitignored, regenerate locally)
 └── tests/                   76 pytest cases
 frontend/                    Static HTML/JS/CSS served by Firebase Hosting
+notebooks/                   Original Jupyter notebooks + dataset CSVs
 docs/superpowers/            Design doc + implementation plan
 DEPLOY.md                    How to deploy to Cloud Run + Firebase
 ```
