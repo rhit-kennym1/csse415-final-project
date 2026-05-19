@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+
+# Trained models — large binaries, regenerated locally before deploy
+backend/models/*.joblib
+
+# OS / IDE
+.DS_Store
+.idea/
