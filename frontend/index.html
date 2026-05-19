@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phishing Detector — CSSE415 Demo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Phishing Website Detector</h1>
+    <p class="subtitle">
+      CSSE415 final project — predicts whether a URL is a phishing site using
+      four trained models, and compares with Google Safe Browsing.
+    </p>
+  </header>
+
+  <main>
+    <section id="input-section">
+      <form id="scan-form">
+        <label for="url-input">URL to scan</label>
+        <input
+          id="url-input"
+          type="url"
+          placeholder="https://example.com"
+          required
+          autocomplete="off"
+        />
+        <button type="submit" id="scan-button">Scan</button>
+      </form>
+      <p class="disclaimer">
+        Class demo only. Not a production security tool. Some dataset features
+        (PageRank, Alexa traffic, etc.) are approximated because the underlying
+        APIs were deprecated.
+      </p>
+    </section>
+
+    <section id="loading-section" hidden>
+      <div class="spinner" aria-label="Loading"></div>
+      <p>Extracting features and querying models…</p>
+    </section>
+
+    <section id="results-section" hidden>
+      <h2 id="scanned-url"></h2>
+
+      <div class="results-grid">
+        <div class="panel">
+          <h3>Our Models</h3>
+          <ul id="model-predictions"></ul>
+        </div>
+        <div class="panel">
+          <h3>Google Safe Browsing</h3>
+          <div id="safe-browsing-result"></div>
+        </div>
+      </div>
+
+      <p id="agreement-line"></p>
+      <p id="approximated-footnote" class="footnote"></p>
+
+      <button id="reset-button">Scan another URL</button>
+    </section>
+
+    <section id="error-section" hidden>
+      <h2>Something went wrong</h2>
+      <p id="error-message"></p>
+      <button id="error-reset-button">Try again</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      Ervin Perkowski, Mark J. Kenny, Sanil Maheshwari ·
+      <a href="https://github.com/rhit-kennym1/csse415-final-project">source</a>
+    </p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
