@@ -1,0 +1,181 @@
+==============================================================================
+  CSSE415 Final Project - Phishing Detection Demo
+  How to run the demo locally
+==============================================================================
+
+Tested on Windows 11 + Python 3.11 / 3.12.
+macOS / Linux equivalents are noted inline.
+
+
+------------------------------------------------------------------------------
+  1. ONE-TIME SETUP
+------------------------------------------------------------------------------
+
+Open a PowerShell terminal at the repo root and run, line by line:
+
+    python -m venv backend\.venv
+    .\backend\.venv\Scripts\Activate.ps1
+    pip install -r backend\requirements-dev.txt
+    python -m backend.train_models
+
+The last command trains the four models on dataset1.csv and writes
+joblib files to backend\models\. Takes about 1-2 minutes. These files
+are gitignored, so each teammate has to run this once after cloning.
+
+
+If PowerShell blocks Activate.ps1 with an execution-policy error, run
+this once in the same terminal and try activation again:
+
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+
+
+macOS / Linux equivalents:
+
+    python3 -m venv backend/.venv
+    source backend/.venv/bin/activate
+    pip install -r backend/requirements-dev.txt
+    python -m backend.train_models
+
+
+------------------------------------------------------------------------------
+  2. (OPTIONAL) GOOGLE SAFE BROWSING API KEY
+------------------------------------------------------------------------------
+
+Without a key the demo still works -- but the Safe Browsing panel will
+show verdict: "unknown". To get a free key:
+
+  1. https://console.cloud.google.com/   (create a project)
+  2. Enable the Safe Browsing API:
+     https://console.cloud.google.com/apis/library/safebrowsing.googleapis.com
+  3. Create an API key at:
+     https://console.cloud.google.com/apis/credentials
+  4. Restrict the key to the Safe Browsing API only
+
+Then copy the .env template and paste your key in:
+
+    copy .env.example .env
+
+Open .env in your editor and set:
+
+    SAFE_BROWSING_API_KEY=AIzaSy...your-actual-key...
+
+.env is gitignored. Your key will NOT be committed.
+
+
+------------------------------------------------------------------------------
+  3. RUN THE DEMO (TWO TERMINALS)
+------------------------------------------------------------------------------
+
+TERMINAL 1 - Backend (repo root, with venv activated):
+
+    python -m uvicorn backend.main:app --port 8000
+
+Wait until you see "Uvicorn running on http://127.0.0.1:8000". Leave it
+running.
+
+
+TERMINAL 2 - Frontend (a new PowerShell window, repo root):
+
+    cd frontend
+    python -m http.server 5000
+
+Wait until you see "Serving HTTP on :: port 5000". Leave it running.
+
+
+Open http://localhost:5000 in your browser.
+
+Paste a URL into the input field, click Scan. Results appear in 5-10
+seconds.
+
+
+------------------------------------------------------------------------------
+  4. SAMPLE URLS TO TRY
+------------------------------------------------------------------------------
+
+Clean baseline -- all models should say legitimate:
+    https://www.wikipedia.org
+
+Google's own Safe Browsing test phishing page (completely safe to visit
+but is flagged by Safe Browsing):
+    https://testsafebrowsing.appspot.com/s/phishing.html
+
+URL with multiple obvious red flags (IP address, @ symbol, shortener,
+non-https):
+    http://192.168.1.1@bit.ly/freegift?login=admin
+
+Phishing-style domain pattern (hyphen + suspicious naming):
+    https://paypal-secure-login.com
+
+
+For a class demo, the cleanest progression is:
+    Wikipedia  ->  Google test phishing  ->  the 192.168.1.1@bit.ly URL
+
+
+------------------------------------------------------------------------------
+  5. STOPPING
+------------------------------------------------------------------------------
+
+Press Ctrl-C in each terminal.
+
+
+------------------------------------------------------------------------------
+  TROUBLESHOOTING
+------------------------------------------------------------------------------
+
+Symptom: ModuleNotFoundError: No module named 'uvicorn'
+Fix:     You're running the system Python instead of the venv.
+         Activate the venv, OR use the explicit path:
+         .\backend\.venv\Scripts\python.exe -m uvicorn backend.main:app --port 8000
+
+Symptom: Docker build fails with "Missing models"
+Fix:     Run `python -m backend.train_models` before building the
+         image.
+
+Symptom: safe_browsing.verdict is always "unknown"
+Fix:     Either there's no API key in .env, or the backend started
+         before .env was saved. Restart uvicorn after editing .env.
+
+Symptom: Scan hangs for ~30 seconds
+Fix:     The target site is blocking the scraper or is very slow.
+         Pick a different URL.
+
+Symptom: First scan after backend start is slow
+Reason:  Models load on the first request. Subsequent scans are
+         faster.
+
+
+------------------------------------------------------------------------------
+  RUNNING THE TESTS
+------------------------------------------------------------------------------
+
+From the backend directory with the venv activated:
+
+    cd backend
+    pytest
+
+Expected: 76 passed.
+
+
+------------------------------------------------------------------------------
+  PROJECT STRUCTURE
+------------------------------------------------------------------------------
+
+backend/                     FastAPI service
+  main.py                    /api/health, /api/predict
+  feature_extractor.py       URL -> 30-feature dict
+  safe_browsing.py           Google Safe Browsing v4 client
+  train_models.py            One-time training script
+  extractors/                Per-feature extractors (URL, HTML, SSL,
+                             WHOIS, DNS)
+  models/                    joblib pickles (gitignored)
+  tests/                     76 pytest cases
+frontend/                    Static HTML / JS / CSS
+docs/superpowers/            Design doc + implementation plan
+DEPLOY.md                    How to deploy to Cloud Run + Firebase
+
+
+------------------------------------------------------------------------------
+  DEPLOYMENT
+------------------------------------------------------------------------------
+
+For deploying to Cloud Run + Firebase Hosting, see DEPLOY.md.
