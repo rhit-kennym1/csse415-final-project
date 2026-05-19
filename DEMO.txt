@@ -41,4 +41,25 @@ python -m http.server 5000
 
 Then open http://localhost:5000
 
+EXAMPLE URL'S TO USE FOR DEMO:
+
+1. Clean baseline -- all models should say legitimate:
+   https://www.wikipedia.org
+
+2. Google's own Safe Browsing test phishing page (completely safe to
+   visit, but is flagged by Safe Browsing):
+   https://testsafebrowsing.appspot.com/s/phishing.html
+
+3. URL with multiple obvious red flags (IP address, @ symbol,
+   shortener, non-HTTPS):
+   http://192.168.1.1@bit.ly/freegift?login=admin
+
+4. Phishing-style domain pattern (hyphen + suspicious naming):
+   https://paypal-secure-login.com
+
+For the class demo, the cleanest narrative is #1 -> #2 -> #3:
+start clean to show the baseline works, escalate to Google's test
+page to show Safe Browsing flagging a known phishing URL, then
+finish with the contrived #3 to show how many URL-level features
+can trip the models at once.
 
