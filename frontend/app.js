@@ -1,4 +1,9 @@
-const API_BASE = window.location.origin; // Firebase Hosting rewrites /api/** to Cloud Run
+// In production (Firebase Hosting), /api/** is rewritten to Cloud Run, so
+// same-origin is correct. In local dev (frontend on :5000, backend on :8000)
+// we point directly at the backend instead.
+const API_BASE = window.location.port === "5000"
+  ? "http://localhost:8000"
+  : window.location.origin;
 
 const sections = {
   input:    document.getElementById("input-section"),
