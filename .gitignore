@@ -7,6 +7,9 @@ __pycache__/
 # Trained models — large binaries, regenerated locally before deploy
 backend/models/*.joblib
 
+# Local secrets — copy .env.example to .env and fill in your keys
+.env
+
 # OS / IDE
 .DS_Store
 .idea/

@@ -8,10 +8,15 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 import joblib
+from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
+
+# Load .env from the project root (one level above this file).
+# No-op in production (Cloud Run injects env vars directly).
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 from backend.feature_extractor import extract_features
 from backend.features import FEATURE_NAMES, APPROXIMATED_FEATURES, to_vector
