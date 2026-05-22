@@ -13,9 +13,17 @@ the deployed bundle stays small.
 """
 from __future__ import annotations
 
+import os
 import shutil
+import stat
 import sys
 from pathlib import Path
+
+
+def _force_remove(func, path, _exc):
+    """rmtree error handler: clear read-only bit (Windows) and retry."""
+    os.chmod(path, stat.S_IWRITE)
+    func(path)
 
 ROOT = Path(__file__).resolve().parent
 SRC = ROOT / "backend"
@@ -59,7 +67,11 @@ def main() -> int:
         return 1
 
     if DEST.exists():
-        shutil.rmtree(DEST)
+        # onexc (3.12+) / onerror (older) — clear read-only files on Windows.
+        try:
+            shutil.rmtree(DEST, onexc=_force_remove)
+        except TypeError:
+            shutil.rmtree(DEST, onerror=lambda f, p, e: _force_remove(f, p, e))
     shutil.copytree(SRC, DEST, ignore=_ignore)
 
     copied_models = list((DEST / "models").glob("*.joblib"))
