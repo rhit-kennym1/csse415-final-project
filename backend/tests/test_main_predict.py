@@ -13,10 +13,10 @@ def test_predict_returns_full_response_shape():
     with patch.object(main_mod, "extract_features", return_value=fake_features), \
          patch.object(main_mod, "check_url", return_value=fake_safe), \
          patch.object(main_mod, "_predict_with_models", return_value=[
-             {"model": "Gradient Boosting", "verdict": "phishing", "probability": 0.92},
-             {"model": "Random Forest",     "verdict": "phishing", "probability": 0.88},
-             {"model": "XGBoost",           "verdict": "legitimate", "probability": 0.21},
-             {"model": "SVM",               "verdict": "phishing", "probability": 0.77},
+             {"model": "Gradient Boosting", "verdict": "phishing"},
+             {"model": "Random Forest",     "verdict": "phishing"},
+             {"model": "XGBoost",           "verdict": "legitimate"},
+             {"model": "SVM",               "verdict": "phishing"},
          ]):
         client = TestClient(app)
         resp = client.post("/api/predict", json={"url": "https://example.com"})
@@ -46,7 +46,7 @@ def test_predict_safe_browsing_failure_still_returns_predictions():
     with patch.object(main_mod, "extract_features", return_value=fake_features), \
          patch.object(main_mod, "check_url", return_value=fake_safe), \
          patch.object(main_mod, "_predict_with_models", return_value=[
-             {"model": "Gradient Boosting", "verdict": "legitimate", "probability": 0.1},
+             {"model": "Gradient Boosting", "verdict": "legitimate"},
          ] * 4):
         client = TestClient(app)
         resp = client.post("/api/predict", json={"url": "https://example.com"})

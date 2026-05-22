@@ -32,17 +32,9 @@ function renderModelPredictions(predictions) {
     const li = document.createElement("li");
     const name = document.createElement("strong");
     name.textContent = p.model;
-    const bar = document.createElement("div");
-    bar.className = "prob-bar";
-    const fill = document.createElement("div");
-    fill.className = `prob-fill prob-${p.verdict}`;
-    fill.style.width = `${Math.round(p.probability * 100)}%`;
-    fill.textContent = `${Math.round(p.probability * 100)}% phishing`;
-    bar.appendChild(fill);
 
     li.appendChild(name);
     li.appendChild(verdictBadge(p.verdict));
-    li.appendChild(bar);
     ul.appendChild(li);
   }
 }

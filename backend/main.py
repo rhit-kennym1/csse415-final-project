@@ -48,7 +48,12 @@ def _load_models() -> None:
 
 
 def _predict_with_models(vector: list[int]) -> list[dict]:
-    """Run all loaded models against the feature vector."""
+    """Run all loaded models against the feature vector.
+
+    Each pipeline gives a straight phishing/legitimate verdict. We still
+    compute the phishing probability internally to apply the 0.5 decision
+    threshold, but it is not surfaced in the response.
+    """
     results = []
     for name, pipe in _MODELS.items():
         # All four pipelines were trained with labels remapped to {0, 1}
@@ -60,7 +65,6 @@ def _predict_with_models(vector: list[int]) -> list[dict]:
         results.append({
             "model": name,
             "verdict": verdict,
-            "probability": round(prob_phishing, 4),
         })
     return results
 
