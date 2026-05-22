@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 # Load .env from the project root (one level above this file) for local dev.
@@ -52,3 +53,12 @@ def health() -> dict:
 def predict(req: PredictRequest) -> JSONResponse:
     status, body = api.run_prediction(req.url)
     return JSONResponse(status_code=status, content=body)
+
+
+# Serve the static frontend from the same origin so the whole app can be
+# exposed through a single port (and a single tunnel). Mounted last so the
+# /api/* routes above take precedence. The frontend's app.js uses
+# window.location.origin for API calls, so this "just works" through a tunnel.
+_FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+if _FRONTEND_DIR.is_dir():
+    app.mount("/", StaticFiles(directory=str(_FRONTEND_DIR), html=True), name="frontend")
