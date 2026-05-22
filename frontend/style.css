@@ -110,6 +110,38 @@ button:hover { opacity: 0.9; }
 
 #agreement-line { font-weight: 600; }
 
+/* Extracted features panel */
+#features-panel { margin: 1rem 0; }
+#feature-list { list-style: none; padding: 0; margin: 0; }
+#feature-list li {
+  display: grid;
+  grid-template-columns: auto minmax(8rem, max-content) 1fr;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+#feature-list li:last-child { border-bottom: none; }
+.feature-label { font-weight: 600; }
+.feature-value { color: var(--text); }
+.feature-suspicious { color: var(--red); font-weight: 600; }
+.feature-neutral { color: var(--gray); }
+.feature-ok { color: var(--green); }
+
+.signal-dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  display: inline-block;
+}
+.signal-ok { background: var(--green); }
+.signal-neutral { background: var(--gray); }
+.signal-suspicious { background: var(--red); }
+
+/* Site-not-found state */
+.panel.notfound { text-align: center; }
+.notfound-headline { font-size: 1.1rem; font-weight: 600; margin: 0.5rem 0; }
+
 footer {
   text-align: center;
   font-size: 0.85rem;

@@ -19,8 +19,9 @@ def test_extract_features_returns_all_keys():
          patch("backend.feature_extractor.dns_record", return_value=1), \
          patch("backend.feature_extractor.ssl_final_state", return_value=1):
         get.return_value = _mock_response()
-        result = extract_features("https://example.com/")
-    assert set(result.keys()) == set(FEATURE_NAMES)
+        features, diag = extract_features("https://example.com/")
+    assert set(features.keys()) == set(FEATURE_NAMES)
+    assert diag["reachable"] is True
 
 
 def test_extract_features_approximated_are_zero():
@@ -29,22 +30,22 @@ def test_extract_features_approximated_are_zero():
          patch("backend.feature_extractor.dns_record", return_value=1), \
          patch("backend.feature_extractor.ssl_final_state", return_value=1):
         get.return_value = _mock_response()
-        result = extract_features("https://example.com/")
+        features, _ = extract_features("https://example.com/")
     for name in APPROXIMATED_FEATURES:
-        assert result[name] == 0
+        assert features[name] == 0
 
 
-def test_extract_features_http_failure_does_not_raise():
-    """Unreachable site still returns a complete feature dict."""
+def test_extract_features_http_failure_marks_unreachable():
+    """Unreachable site still returns a complete feature dict, flagged unreachable."""
     with patch("backend.feature_extractor.requests.get") as get, \
          patch("backend.feature_extractor.fetch_whois", return_value=None), \
          patch("backend.feature_extractor.dns_record", return_value=-1), \
          patch("backend.feature_extractor.ssl_final_state", return_value=-1):
         get.side_effect = Exception("connection refused")
-        result = extract_features("https://nonexistent.invalid/")
-    assert set(result.keys()) == set(FEATURE_NAMES)
-    # Network-fetched HTML features must still be present
-    assert "Iframe" in result
+        features, diag = extract_features("https://nonexistent.invalid/")
+    assert set(features.keys()) == set(FEATURE_NAMES)
+    assert "Iframe" in features
+    assert diag["reachable"] is False
 
 
 def test_extract_features_redirect_count():
@@ -55,5 +56,5 @@ def test_extract_features_redirect_count():
          patch("backend.feature_extractor.fetch_whois", return_value=None), \
          patch("backend.feature_extractor.dns_record", return_value=1), \
          patch("backend.feature_extractor.ssl_final_state", return_value=1):
-        result = extract_features("https://example.com/")
-    assert result["Redirect"] == -1  # >=4 hops
+        features, _ = extract_features("https://example.com/")
+    assert features["Redirect"] == -1  # >=4 hops

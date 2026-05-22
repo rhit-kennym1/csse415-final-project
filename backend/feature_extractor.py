@@ -48,8 +48,14 @@ def _safe(fn, default, *args, **kwargs):
         return default
 
 
-def extract_features(url: str) -> dict[str, int]:
-    """Run all extractors. Any single failure falls back to neutral 0."""
+def extract_features(url: str) -> tuple[dict[str, int], dict]:
+    """Run all extractors. Any single failure falls back to neutral 0.
+
+    Returns a (features, diagnostics) tuple. diagnostics["reachable"] is True
+    when the page returned an HTTP response; False when the site could not be
+    reached at all (DNS failure or connection error) — i.e. it likely does
+    not exist.
+    """
     host = (urlparse(url).hostname or "").lower()
     features: dict[str, int] = {}
 
@@ -120,4 +126,5 @@ def extract_features(url: str) -> dict[str, int]:
     for name in FEATURE_NAMES:
         features.setdefault(name, 0)
 
-    return features
+    diagnostics = {"reachable": doc is not None}
+    return features, diagnostics

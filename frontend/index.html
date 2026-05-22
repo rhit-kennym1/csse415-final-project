@@ -55,9 +55,28 @@
       </div>
 
       <p id="agreement-line"></p>
+
+      <div class="panel" id="features-panel">
+        <h3>Extracted Features</h3>
+        <ul id="feature-list"></ul>
+      </div>
+
       <p id="approximated-footnote" class="footnote"></p>
 
       <button id="reset-button">Scan another URL</button>
+    </section>
+
+    <section id="notfound-section" hidden>
+      <h2 id="notfound-url"></h2>
+      <div class="panel notfound">
+        <p class="notfound-headline">⚠ This website could not be reached — it may not exist.</p>
+        <p class="footnote">
+          The domain didn't resolve or the page failed to load, so there are no
+          live page features to analyze. The models only run on sites that
+          respond.
+        </p>
+      </div>
+      <button id="notfound-reset-button">Scan another URL</button>
     </section>
 
     <section id="error-section" hidden>

@@ -9,6 +9,7 @@ const sections = {
   input:    document.getElementById("input-section"),
   loading:  document.getElementById("loading-section"),
   results:  document.getElementById("results-section"),
+  notfound: document.getElementById("notfound-section"),
   error:    document.getElementById("error-section"),
 };
 
@@ -75,6 +76,31 @@ function renderAgreement(predictions, sb) {
   }
 }
 
+function renderFeatures(featuresDisplay) {
+  const ul = document.getElementById("feature-list");
+  ul.innerHTML = "";
+  if (!featuresDisplay) return;
+  for (const f of featuresDisplay) {
+    const li = document.createElement("li");
+
+    const dot = document.createElement("span");
+    dot.className = `signal-dot signal-${f.signal}`;
+
+    const label = document.createElement("span");
+    label.className = "feature-label";
+    label.textContent = f.label;
+
+    const value = document.createElement("span");
+    value.className = `feature-value feature-${f.signal}`;
+    value.textContent = f.value;
+
+    li.appendChild(dot);
+    li.appendChild(label);
+    li.appendChild(value);
+    ul.appendChild(li);
+  }
+}
+
 function renderApproximated(meta) {
   const el = document.getElementById("approximated-footnote");
   if (!meta || !meta.approximated || !meta.approximated.length) {
@@ -104,10 +130,16 @@ async function scan(url) {
     showError(data.message || data.error || `HTTP ${resp.status}`);
     return;
   }
+  if (data.reachable === false) {
+    document.getElementById("notfound-url").textContent = data.url;
+    showOnly("notfound");
+    return;
+  }
   document.getElementById("scanned-url").textContent = data.url;
   renderModelPredictions(data.predictions);
   renderSafeBrowsing(data.safe_browsing);
   renderAgreement(data.predictions, data.safe_browsing);
+  renderFeatures(data.features_display);
   renderApproximated(data.features_meta);
   showOnly("results");
 }
@@ -131,4 +163,5 @@ document.getElementById("scan-form").addEventListener("submit", (e) => {
   if (url) scan(url);
 });
 document.getElementById("reset-button").addEventListener("click", reset);
+document.getElementById("notfound-reset-button").addEventListener("click", reset);
 document.getElementById("error-reset-button").addEventListener("click", reset);

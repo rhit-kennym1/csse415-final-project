@@ -19,6 +19,7 @@ from pydantic import BaseModel, Field
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 from backend.feature_extractor import extract_features
+from backend.feature_display import build_display
 from backend.features import FEATURE_NAMES, APPROXIMATED_FEATURES, to_vector
 from backend.safe_browsing import check_url
 
@@ -131,14 +132,26 @@ async def predict(req: PredictRequest) -> JSONResponse:
     extract_task = loop.run_in_executor(None, extract_features, url)
     safe_task = loop.run_in_executor(None, check_url, url, None)
 
-    features, safe_browsing = await asyncio.gather(extract_task, safe_task)
+    (features, diagnostics), safe_browsing = await asyncio.gather(extract_task, safe_task)
+
+    # If the site could not be reached, there are no real page features to
+    # judge — report that instead of running the models on empty defaults.
+    if not diagnostics.get("reachable"):
+        return JSONResponse(content={
+            "url": url,
+            "reachable": False,
+            "message": "This website could not be reached — it may not exist.",
+        })
+
     vector = to_vector(features)
     predictions = _predict_with_models(vector)
 
     return JSONResponse(content={
         "url": url,
+        "reachable": True,
         "predictions": predictions,
         "safe_browsing": safe_browsing,
+        "features_display": build_display(features),
         "features_meta": {
             "approximated": APPROXIMATED_FEATURES,
         },
