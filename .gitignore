@@ -13,3 +13,4 @@ backend/models/*.joblib
 # OS / IDE
 .DS_Store
 .idea/
+cloudflared.exe
