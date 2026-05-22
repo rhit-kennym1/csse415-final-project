@@ -116,10 +116,13 @@ backend/                     FastAPI service
 ├── extractors/              Per-feature extractors (URL-only, HTML, SSL, WHOIS, DNS)
 ├── models/                  joblib pickles (gitignored, regenerate locally)
 └── tests/                   76 pytest cases
+├── api.py                   Framework-agnostic prediction core (shared)
 frontend/                    Static HTML/JS/CSS served by Firebase Hosting
+functions/                   Firebase Cloud Function wrapper (deploy bundle)
+prepare_functions.py         Bundles backend into functions/ before deploy
 notebooks/                   Original Jupyter notebooks + dataset CSVs
 docs/superpowers/            Design doc + implementation plan
-DEPLOY.md                    How to deploy to Cloud Run + Firebase
+DEPLOY.md                    How to deploy to Firebase (Hosting + Functions)
 ```
 
 ## Running the tests
@@ -134,4 +137,5 @@ Expected: **76 passed**.
 
 ## Deployment
 
-See [DEPLOY.md](DEPLOY.md) for the full Cloud Run + Firebase Hosting walkthrough.
+See [DEPLOY.md](DEPLOY.md) for the full Firebase walkthrough (Hosting + a
+Python Cloud Function — no Docker or gcloud needed).

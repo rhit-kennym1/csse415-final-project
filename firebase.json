@@ -1,4 +1,17 @@
 {
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "runtime": "python312",
+      "ignore": [
+        "venv",
+        ".git",
+        "__pycache__",
+        "*.pyc"
+      ]
+    }
+  ],
   "hosting": {
     "public": "frontend",
     "ignore": [
@@ -9,8 +22,8 @@
     "rewrites": [
       {
         "source": "/api/**",
-        "run": {
-          "serviceId": "phishing-demo",
+        "function": {
+          "functionId": "api_handler",
           "region": "us-central1"
         }
       }

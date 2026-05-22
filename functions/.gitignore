@@ -1,0 +1,10 @@
+# Bundled copy of the backend package — assembled by prepare_functions.py at
+# deploy time, not committed (the canonical source lives in /backend).
+backend/
+
+# Firebase Python functions virtualenv
+venv/
+__pycache__/
+
+# Function environment variables (Safe Browsing API key) — secret
+.env
